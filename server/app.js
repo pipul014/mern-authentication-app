@@ -5,7 +5,12 @@ require("./db/conn");
 const port = process.env.PORT ||4000;
 const app = express();
 
-app.use(cors());
+const corsOptions={
+  origin:"http://localhost:3000",
+  methods:"GET,POST,PUT,PATCH,DELETE",
+  Credential:true
+}
+app.use(cors(corsOptions));
 app.use(express.json());
 
 const usreAuthRoutes=require("./routes/router");

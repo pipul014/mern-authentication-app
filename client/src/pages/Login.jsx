@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-const Register = () => {
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../store/auth"; 
+import { toast } from "react-hot-toast";
+const URL = "http://localhost:3009/userAuth/v1/api/login";
+
+const Login = () => {
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext); 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    password: "",
   });
 
   const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    email: "",
+    password: "",
   });
 
   const handleInputChange = (e) => {
@@ -25,20 +27,58 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.email) newErrors.email = 'Email is required';
-    if (!formData.password) newErrors.password = 'Password is required';
+    if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.password) newErrors.password = "Password is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(e);
-    
-    if (validateForm()) {
-      console.log('Form submitted', formData);
+  
+    if (!validateForm()) {
+      return;
+    }
+  
+    try {
+      const response = await fetch(URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+  
+      const res = await response.json();
+  
+      if (response.ok) {
+        const token = res.result.token;
+        login(token);
+        console.log("Login successful");
+  
+        setFormData({ email: "", password: "" });
+  
+        toast.success("Login Successful!", {
+          position: "top-center",
+        });
+  
+        navigate("/dashboard");
+      }else if(response.status ===400){
+        toast.error(res.message || "provide valid email or password", { position: "top-center" });
+        
+      }
+      else {
+        toast.error(res.message || "login failed. Please try again.", {
+          position: "top-center",
+        });
+        
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      alert("An error occurred during login.");
     }
   };
+  
 
   return (
     <div className="min-h-screen flex justify-center items-center">
@@ -74,18 +114,17 @@ const Register = () => {
             />
             {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
           </div>
+
           <button
             type="submit"
             className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
             Log In
           </button>
-          <div></div>
-          <Link to="relative" className='text-blue-700 '><p className='mt-2'>Forgot your password?</p></Link>
         </form>
       </div>
     </div>
   );
 };
 
-export default Register;
+export default Login;
