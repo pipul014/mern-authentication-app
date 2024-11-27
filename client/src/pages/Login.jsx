@@ -61,7 +61,7 @@ const Login = () => {
         toast.success("Login Successful!", {
           position: "top-center",
         });
-  
+        localStorage.setItem("usersdatatoken",res.result.token);
         navigate("/dashboard");
       }else if(response.status ===400){
         toast.error(res.message || "provide valid email or password", { position: "top-center" });

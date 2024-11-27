@@ -19,7 +19,7 @@ const Register = () => {
     cpassword: "",
   });
 
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false); 
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -28,7 +28,7 @@ const Register = () => {
       [name]: value,
     }));
 
-    // Clear the error if the user starts typing in the input
+
     if (errors[name]) {
       setErrors((prevErrors) => ({
         ...prevErrors,
@@ -56,8 +56,7 @@ const Register = () => {
       return;
     }
 
-    setLoading(true); // Set loading to true
-
+    setLoading(true); 
     try {
       const response = await fetch(`http://localhost:3009/userAuth/v1/api/register`, {
         method: "POST",
@@ -163,10 +162,10 @@ const Register = () => {
 
           <button
             type="submit"
-            disabled={loading} // Disable button while loading
+            disabled={loading} 
             className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            {loading ? "Signing up..." : "Sign Up"} {/* Show loading text while waiting */}
+            {loading ? "Signing up..." : "Sign Up"} 
           </button>
 
           <div className="flex mt-2">
